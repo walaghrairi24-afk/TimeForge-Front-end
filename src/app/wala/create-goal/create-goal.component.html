@@ -1,0 +1,144 @@
+<div class="form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>Créer un Nouvel Objectif</h2>
+    </div>
+    <div class="form-body">
+      <!-- Overlay de chargement -->
+      <div class="form-loading-overlay" *ngIf="isSubmitting">
+        <div class="loading-content">
+          <div class="loading-spinner-large"></div>
+          <p>Création en cours...</p>
+        </div>
+      </div>
+
+      <form [formGroup]="goalForm" (ngSubmit)="onSubmit()" class="goal-form">
+        <div class="form-grid">
+          <!-- Titre -->
+          <div class="form-group full-width required">
+            <label for="title" class="form-label">Titre</label>
+            <input
+              type="text"
+              id="title"
+              class="form-input"
+              formControlName="title"
+              [class.input-invalid]="goalForm.get('title')?.invalid && goalForm.get('title')?.touched"
+              placeholder="Entrez le titre de l'objectif">
+            <div class="error-message" *ngIf="goalForm.get('title')?.errors?.['required'] && goalForm.get('title')?.touched">
+              Le titre est obligatoire
+            </div>
+            <div class="error-message" *ngIf="goalForm.get('title')?.errors?.['minlength'] && goalForm.get('title')?.touched">
+              Le titre doit contenir au moins 3 caractères
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group full-width">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              id="description"
+              class="form-textarea"
+              formControlName="description"
+              rows="3"
+              placeholder="Décrivez l'objectif..."></textarea>
+          </div>
+
+          <!-- Dates -->
+          <div class="form-group required">
+            <label for="startDate" class="form-label">Date de début</label>
+            <input
+              type="date"
+              id="startDate"
+              class="form-input"
+              formControlName="startDate"
+              [class.input-invalid]="goalForm.get('startDate')?.invalid && goalForm.get('startDate')?.touched">
+            <div class="error-message" *ngIf="goalForm.get('startDate')?.errors?.['required'] && goalForm.get('startDate')?.touched">
+              La date de début est obligatoire
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="endDate" class="form-label">Date de fin</label>
+            <input
+              type="date"
+              id="endDate"
+              class="form-input"
+              formControlName="endDate">
+          </div>
+
+          <!-- Progression -->
+          <div class="form-group">
+            <label for="progress" class="form-label">Progression (%)</label>
+            <input
+              type="number"
+              id="progress"
+              class="form-input"
+              formControlName="progress"
+              min="0"
+              max="100"
+              [class.input-invalid]="goalForm.get('progress')?.invalid && goalForm.get('progress')?.touched">
+            <div class="error-message" *ngIf="goalForm.get('progress')?.errors?.['min']">
+              La progression ne peut pas être négative
+            </div>
+            <div class="error-message" *ngIf="goalForm.get('progress')?.errors?.['max']">
+              La progression ne peut pas dépasser 100%
+            </div>
+          </div>
+
+          <!-- Statut -->
+          <div class="form-group">
+            <label for="status" class="form-label">Statut</label>
+            <select id="status" class="form-select" formControlName="status">
+              <option value="Not Started">Non commencé</option>
+              <option value="In Progress">En cours</option>
+              <option value="Completed">Terminé</option>
+              <option value="Cancelled">Annulé</option>
+            </select>
+          </div>
+
+          <!-- Priorité -->
+          <div class="form-group">
+            <label for="priority" class="form-label">Priorité</label>
+            <select id="priority" class="form-select" formControlName="priority">
+              <option value="Low">Basse</option>
+              <option value="Medium">Moyenne</option>
+              <option value="High">Haute</option>
+            </select>
+          </div>
+
+          <!-- Owner ID -->
+          <div class="form-group full-width required">
+            <label for="ownerId" class="form-label">ID du propriétaire</label>
+            <input
+              type="number"
+              id="ownerId"
+              class="form-input"
+              formControlName="ownerId"
+              [class.input-invalid]="goalForm.get('ownerId')?.invalid && goalForm.get('ownerId')?.touched"
+              min="1">
+            <div class="error-message" *ngIf="goalForm.get('ownerId')?.errors?.['required'] && goalForm.get('ownerId')?.touched">
+              L'ID du propriétaire est obligatoire
+            </div>
+            <div class="error-message" *ngIf="goalForm.get('ownerId')?.errors?.['min'] && goalForm.get('ownerId')?.touched">
+              L'ID doit être supérieur à 0
+            </div>
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!goalForm.valid || isSubmitting">
+            <span *ngIf="isSubmitting" class="btn-spinner"></span>
+            {{ isSubmitting ? 'Création...' : 'Créer l\'objectif' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

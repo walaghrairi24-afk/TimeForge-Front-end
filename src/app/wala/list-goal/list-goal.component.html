@@ -1,0 +1,239 @@
+<div class="container">
+  <!-- En-tête -->
+  <div class="header">
+    <h2>Gestion des Objectifs</h2>
+    <button class="btn btn-primary" routerLink="/goals/create">
+      <span class="icon">+</span> Nouvel Objectif
+    </button>
+  </div>
+
+  <!-- Filtres -->
+  <div class="card filter-card">
+    <div class="card-header">
+      <h3>Filtres et Recherche</h3>
+    </div>
+    <div class="card-body">
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label for="search" class="form-label">Recherche</label>
+          <input
+            type="text"
+            id="search"
+            class="form-control"
+            [(ngModel)]="searchTerm"
+            placeholder="Rechercher par titre ou description..."
+            (keyup.enter)="onSearch()">
+        </div>
+
+        <div class="filter-actions">
+          <button class="btn btn-outline search-btn" (click)="onSearch()">
+            <span class="icon">🔍</span> Rechercher
+          </button>
+          <button class="btn btn-secondary reset-btn" (click)="onResetFilters()" title="Réinitialiser">
+            <span class="icon">🔄</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export -->
+  <div class="card export-card">
+    <div class="card-body">
+      <div class="export-content">
+        <div class="stats">
+          <span class="stats-text">
+            Total: {{ totalElements }} objectif(s) - Page {{ currentPage + 1 }} sur {{ totalPages }}
+          </span>
+        </div>
+        <div class="export-buttons">
+          <button
+            class="btn btn-outline pdf-btn"
+            (click)="onExportPdf()"
+            [disabled]="exportLoading || totalElements === 0">
+            <span *ngIf="exportLoading" class="spinner"></span>
+            <span class="icon">📄</span> Export PDF
+          </button>
+          <button
+            class="btn btn-outline excel-btn"
+            (click)="onExportExcel()"
+            [disabled]="exportLoading || totalElements === 0">
+            <span *ngIf="exportLoading" class="spinner"></span>
+            <span class="icon">📊</span> Export Excel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  <div class="card table-card">
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th
+            *ngFor="let col of columns"
+            (click)="onSort(col.key)"
+            class="sortable-header"
+            [title]="'Trier par ' + col.label">
+            {{ col.label }}
+            <span [class]="getSortIcon(col.key)" class="sort-icon"></span>
+          </th>
+          <th class="actions-header">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Loading -->
+        <tr *ngIf="isLoading">
+          <td [colSpan]="columns.length + 1" class="loading-cell">
+            <div class="loading-spinner"></div>
+            <span>Chargement...</span>
+          </td>
+        </tr>
+
+        <!-- Aucun résultat -->
+        <tr *ngIf="!isLoading && goals.length === 0">
+          <td [colSpan]="columns.length + 1" class="empty-cell">
+            <div class="empty-icon">📭</div>
+            <span>Aucun objectif trouvé</span>
+          </td>
+        </tr>
+
+        <!-- Données -->
+        <tr *ngFor="let goal of goals" class="data-row">
+          <td class="id-cell"><strong>#{{ goal.id }}</strong></td>
+          <td class="title-cell">
+            <div class="goal-title">{{ goal.title }}</div>
+            <div *ngIf="goal.description" class="goal-description">
+              {{ goal.description | slice:0:50 }}{{ goal.description.length > 50 ? '...' : '' }}
+            </div>
+          </td>
+          <td class="date-cell">{{ goal.startDate | date:'dd/MM/yyyy' }}</td>
+          <td class="date-cell">
+              <span *ngIf="goal.endDate; else noEndDate">
+                {{ goal.endDate | date:'dd/MM/yyyy' }}
+              </span>
+            <ng-template #noEndDate>
+              <span class="no-data">-</span>
+            </ng-template>
+          </td>
+          <td class="progress-cell">
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  [class]="getProgressColor(goal.progress)"
+                  [style.width]="goal.progress + '%'">
+                </div>
+              </div>
+              <span class="progress-text">{{ goal.progress }}%</span>
+            </div>
+          </td>
+          <td class="status-cell">
+              <span class="status-badge" [class]="getStatusBadgeClass(goal.status)">
+                {{ goal.status }}
+              </span>
+          </td>
+          <td class="priority-cell">
+              <span *ngIf="goal.priority" class="priority-badge" [class]="getPriorityBadgeClass(goal.priority)">
+                {{ goal.priority }}
+              </span>
+            <span *ngIf="!goal.priority" class="no-data">-</span>
+          </td>
+
+          <td class="date-cell">{{ goal.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td class="actions-cell">
+            <div class="action-buttons">
+              <button
+                class="btn-icon view-btn"
+                (click)="onViewGoal(goal.id)"
+                title="Voir">
+                👁️
+              </button>
+              <button
+                class="btn-icon edit-btn"
+                (click)="onEditGoal(goal.id)"
+                title="Modifier">
+                ✏️
+              </button>
+              <button
+                class="btn-icon progress-btn"
+                (click)="onUpdateProgress(goal)"
+                title="Mettre à jour progression">
+                📈
+              </button>
+              <button
+                class="btn-icon delete-btn"
+                (click)="onDeleteGoal(goal.id)"
+                title="Supprimer">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <div class="pagination-content">
+        <div class="page-size-selector">
+          <select
+            class="page-select"
+            [(ngModel)]="pageSize"
+            (change)="onPageSizeChange()">
+            <option value="5">5 par page</option>
+            <option value="10">10 par page</option>
+            <option value="20">20 par page</option>
+            <option value="50">50 par page</option>
+          </select>
+        </div>
+
+        <div class="pagination">
+          <!-- Première page -->
+          <button
+            class="page-btn first-page"
+            (click)="onPageChange(0)"
+            [disabled]="currentPage === 0">
+            ««
+          </button>
+
+          <!-- Page précédente -->
+          <button
+            class="page-btn prev-page"
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 0">
+            «
+          </button>
+
+          <!-- Pages -->
+          <button
+            *ngFor="let page of pages"
+            class="page-btn"
+            [class.active]="page === currentPage"
+            (click)="onPageChange(page)">
+            {{ page + 1 }}
+          </button>
+
+          <!-- Page suivante -->
+          <button
+            class="page-btn next-page"
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage === totalPages - 1">
+            »
+          </button>
+
+          <!-- Dernière page -->
+          <button
+            class="page-btn last-page"
+            (click)="onPageChange(totalPages - 1)"
+            [disabled]="currentPage === totalPages - 1">
+            »»
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

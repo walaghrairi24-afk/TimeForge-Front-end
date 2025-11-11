@@ -1,0 +1,123 @@
+.admin-sidebar {
+  width: 250px;
+  background-color: #050709;
+  color: white;
+  padding: 20px 0;
+  transition: all 0.3s ease;
+  position: fixed;
+  height: 100vh;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.admin-sidebar.collapsed {
+  width: 70px;
+}
+
+.admin-brand {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #333;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-brand img {
+  width: 150px;
+  transition: width 0.3s;
+}
+
+.admin-sidebar.collapsed .admin-brand img {
+  width: 40px;
+}
+
+.admin-brand span {
+  margin-top: 10px;
+  font-size: 16px;
+  transition: opacity 0.3s;
+}
+
+.admin-sidebar.collapsed .admin-brand span {
+  opacity: 0;
+  display: none;
+}
+
+.admin-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-menu li {
+  padding: 15px 20px;
+  border-left: 4px solid transparent;
+  transition: all 0.3s;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.admin-menu li:hover {
+  background-color: #1a1a1a;
+  border-left: 4px solid #fff;
+}
+
+.admin-menu li.active {
+  background-color: #1a1a1a;
+  border-left: 4px solid #fff;
+}
+
+.admin-menu a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-menu i {
+  width: 20px;
+  text-align: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.admin-menu span {
+  transition: opacity 0.3s;
+}
+
+.admin-sidebar.collapsed .admin-menu span {
+  opacity: 0;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    display: none;
+  }
+
+  .admin-sidebar.active {
+    display: block;
+  }
+
+  .admin-menu {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .admin-menu li {
+    border-left: none;
+    border-bottom: 4px solid transparent;
+    padding: 10px 15px;
+    white-space: nowrap;
+  }
+
+  .admin-menu li:hover, .admin-menu li.active {
+    border-left: none;
+    border-bottom: 4px solid #fff;
+  }
+}

@@ -1,0 +1,112 @@
+<div class="detail-container">
+  <!-- Loading -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Chargement de l'objectif...</p>
+    </div>
+  </div>
+
+  <!-- Goal Details -->
+  <div *ngIf="goal && !isLoading" class="detail-card">
+    <div class="detail-header">
+      <div class="header-content">
+        <h1 class="goal-title">{{ goal.title }}</h1>
+        <div class="badge-container">
+          <span class="status-badge" [class]="getStatusBadgeClass(goal.status)">
+            {{ goal.status }}
+          </span>
+          <span class="priority-badge" [class]="getPriorityBadgeClass(goal.priority || '')">
+            {{ goal.priority }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-body">
+      <!-- Progress Bar -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <span class="progress-label">Progression</span>
+          <span class="progress-value"><strong>{{ goal.progress }}%</strong></span>
+        </div>
+        <div class="progress-bar-container">
+          <div
+            class="progress-fill"
+            [class]="getProgressColor(goal.progress)"
+            [style.width]="goal.progress + '%'"
+            role="progressbar"
+            [attr.aria-valuenow]="goal.progress"
+            aria-valuemin="0"
+            aria-valuemax="100">
+            <span class="progress-text">{{ goal.progress }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="description-section">
+        <h3 class="section-title">Description</h3>
+        <div class="description-content" *ngIf="goal.description; else noDescription">
+          {{ goal.description }}
+        </div>
+        <ng-template #noDescription>
+          <div class="no-data-message">Aucune description fournie</div>
+        </ng-template>
+      </div>
+
+      <!-- Dates -->
+      <div class="dates-grid">
+        <div class="date-item">
+          <strong class="date-label">Date de début:</strong>
+          <p class="date-value">{{ goal.startDate | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <div class="date-item">
+          <strong class="date-label">Date de fin:</strong>
+          <p class="date-value" *ngIf="goal.endDate; else noEndDate">
+            {{ goal.endDate | date:'dd/MM/yyyy' }}
+          </p>
+          <ng-template #noEndDate>
+            <p class="no-data-message">Non définie</p>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Completion Date -->
+      <div class="completion-section" *ngIf="goal.completionDate">
+        <strong class="completion-label">Date d'achèvement:</strong>
+        <p class="completion-value">{{ goal.completionDate | date:'dd/MM/yyyy' }}</p>
+      </div>
+
+      <!-- Metadata -->
+      <div class="metadata-grid">
+        <div class="metadata-item">
+          <strong class="metadata-label">Propriétaire:</strong>
+          <p class="metadata-value">ID: {{ goal.ownerId }}</p>
+        </div>
+        <div class="metadata-item">
+          <strong class="metadata-label">Créé le:</strong>
+          <p class="metadata-value">{{ goal.createdAt | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <div class="metadata-item">
+          <strong class="metadata-label">Dernière modification:</strong>
+          <p class="metadata-value">{{ goal.updatedAt | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-footer">
+      <div class="action-buttons">
+        <button type="button" class="btn btn-secondary" (click)="onBack()">
+          ← Retour
+        </button>
+        <button type="button" class="btn btn-warning" (click)="onEdit()">
+          ✏️ Modifier
+        </button>
+        <button type="button" class="btn btn-danger" (click)="onDelete()">
+          🗑️ Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

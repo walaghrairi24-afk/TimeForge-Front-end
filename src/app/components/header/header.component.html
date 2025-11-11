@@ -1,0 +1,69 @@
+<div class="admin-header">
+  <div class="header-left">
+    <button class="sidebar-toggle" (click)="onToggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <h2 class="admin-title">Dashboard</h2>
+  </div>
+
+  <div class="header-right">
+    <div class="notification-icon" (click)="toggleNotifications()">
+      <i class="fas fa-bell"></i>
+      <span class="notification-badge">5</span>
+
+      <div class="notification-dropdown" [class.active]="isNotificationOpen">
+        <div class="notification-header">
+          <h3>Notifications</h3>
+          <button class="btn btn-primary">Mark all as read</button>
+        </div>
+        <div class="notification-list">
+          <!-- Notification items -->
+          <div class="notification-item unread">
+            <i class="fas fa-shopping-cart notification-icon-sm"></i>
+            <div class="notification-content">
+              <p>New order received from Sarah Ben Ammar</p>
+              <span class="notification-time">10 minutes ago</span>
+            </div>
+          </div>
+          <div class="notification-item unread">
+            <i class="fas fa-box notification-icon-sm"></i>
+            <div class="notification-content">
+              <p>Product "Hair Serum" is running low in stock</p>
+              <span class="notification-time">2 hours ago</span>
+            </div>
+          </div>
+          <div class="notification-item">
+            <i class="fas fa-star notification-icon-sm"></i>
+            <div class="notification-content">
+              <p>New customer review received</p>
+              <span class="notification-time">Yesterday</span>
+            </div>
+          </div>
+        </div>
+        <div class="notification-footer">
+          <a href="#">View all notifications</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-user" (click)="toggleUserDropdown()">
+      <img src="https://ui-avatars.com/api/?name=Admin+User&background=random" alt="Admin User">
+
+
+      <div class="user-dropdown" [class.active]="isUserDropdownOpen">
+        <div class="user-dropdown-item">
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
+        </div>
+        <div class="user-dropdown-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </div>
+        <div class="user-dropdown-item logout">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

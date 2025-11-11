@@ -1,0 +1,42 @@
+/* Styles spécifiques au layout principal */
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-main {
+  flex: 1;
+  padding: 20px;
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
+
+.admin-main.expanded {
+  margin-left: 70px;
+}
+
+.admin-section {
+  margin-top: 20px;
+}
+
+@media (max-width: 992px) {
+  .admin-main {
+    margin-left: 70px;
+  }
+
+  .admin-main.expanded {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .admin-section {
+    margin-top: 15px;
+  }
+}
